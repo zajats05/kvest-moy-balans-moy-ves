@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Квест: Мой баланс – мой вес</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8fb;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #00a8e8, #6dd5ed);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .mission {
+            flex: 1 1 280px;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        .mission-1 {
+            background: #e3f2fd; /* мягкий голубой */
+        }
+        .mission-2 {
+            background: #e8f5e9; /* мягкий зелёный */
+        }
+        .mission-3 {
+            background: #fff3e0; /* мягкий оранжевый */
+        }
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #ffecb3;
+            margin: 4px 4px 0 0;
+            font-size: 0.9rem;
+        }
+        button {
+            background: #00a8e8;
+            border: none;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        button:hover {
+            background: #008ac0;
+        }
+        .btn-secondary {
+            background: #cfd8dc;
+            color: #37474f;
+        }
+        .btn-secondary:hover {
+            background: #b0bec5;
+        }
+        .progress-bar {
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .progress-bar-inner {
+            height: 18px;
+            background: linear-gradient(90deg,#00c853,#b2ff59);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        .task-list li {
+            margin-bottom: 4px;
+        }
+        .task-list input[type="checkbox"] {
+            margin-right: 6px;
+        }
+        .highlight {
+            background: #e8f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #e0f7fa;
+            font-size: 0.85rem;
+            margin-right: 4px;
+        }
+        .quote {
+            border-left: 3px solid #00a8e8;
+            padding-left: 10px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        .tab-buttons button {
+            background: #e0f7fa;
+            color: #007c91;
+            margin-right: 4px;
+        }
+        .tab-buttons button.active {
+            background: #00a8e8;
+            color: #fff;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .small {
+            font-size: 0.85rem;
+            color: #555;
+        }
+        .meme-box {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            background: #f1f8e9;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Квест: «Мой баланс – мой вес»</h1>
+    <p>Интерактивный гид для подростков по контролю веса и профилактике ожирения</p>
+</header>
+<main>
+    <section class="card">
+        <h2>Как работает этот квест?</h2>
+        <p>Это не диета и не лекция. Это набор коротких миссий, которые ты выбираешь сам(а). Чем больше миссий выполняешь, тем больше очков и значков получаешь.</p>
+        <ul>
+            <li>Выбирай задания, которые тебе реально по силам.</li>
+            <li>Отмечай выполненные пункты – смотри, как растёт твой прогресс.</li>
+            <li>Используй подсказки, если не знаешь, с чего начать.</li>
+        </ul>
+        <div class="progress-bar">
+            <div class="progress-bar-inner" id="globalProgress"></div>
+        </div>
+        <p>Твой общий прогресс: <span id="globalPercent">0</span>%</p>
+        <p id="motivation" class="quote">Каждый маленький шаг – уже не ноль. Ты молодец, что начал(а).</p>
+        <button type="button" class="btn-secondary" id="resetBtn">Обнулить прогресс и начать заново</button>
+    </section>
+
+    <section class="card">
+        <h2>Миссии на неделю</h2>
+        <div class="flex">
+            <div class="mission mission-1">
+                <h3>Миссия 1: Еда без паники</h3>
+                <ul class="task-list">
+                    <li><label><input type="checkbox" class="task" data-points="5">Завтракать хотя бы 3 дня подряд</label></li>
+                    <li><label><input type="checkbox" class="task" data-points="5">Заменить 1 сладкую газировку в день на воду</label></li>
+                    <li><label><input type="checkbox" class="task" data-points="5">Добавить 1 порцию овощей или фруктов в день</label></li>
+                </ul>
+                <div class="small">Подсказка: посмотри «Тарелку здорового питания» – можно распечатать и повесить дома.</div>
+                <div class="small"><a href="tarelka_zdorovogo_pitaniya_podrostki.png" target="_blank">Открыть инфографику «Тарелка»</a></div>
+                <div class="meme-box">Мем: «Когда добавил овощи, а мир не рухнул» 😄</div>
+            </div>
+            <div class="mission mission-2">
+                <h3>Миссия 2: Движение по пути</h3>
+                <ul class="task-list">
+                    <li><label><input type="checkbox" class="task" data-points="5">Пройти пешком минимум 10 минут дополнительно</label></li>
+                    <li><label><input type="checkbox" class="task" data-points="5">Один раз подняться по лестнице вместо лифта</label></li>
+                    <li><label><input type="checkbox" class="task" data-points="5">Сделать 5–10 минут зарядки под музыку</label></li>
+                </ul>
+                <div class="small">Подсказка: глянь «Пирамиду активности» и выбери, что тебе ближе.</div>
+                <div class="small"><a href="piramida_aktivnosti_podrostki.png" target="_blank">Открыть инфографику «Пирамида активности»</a></div>
+                <div class="meme-box">Мем: «Тот момент, когда поднялся по лестнице и почувствовал себя героем» 🦸</div>
+            </div>
+            <div class="mission mission-3">
+                <h3>Миссия 3: Экран под контролем</h3>
+                <ul class="task-list">
+                    <li><label><input type="checkbox" class="task" data-points="5">Не использовать телефон 30 минут перед сном</label></li>
+                    <li><label><input type="checkbox" class="task" data-points="5">Один приём пищи без экрана</label></li>
+                    <li><label><input type="checkbox" class="task" data-points="5">Сделать перерыв 5 минут после каждого часа за гаджетом</label></li>
+                </ul>
+                <div class="small">Подсказка: посмотри идеи перекусов – можно совместить «безэкранный» перекус и разговор.</div>
+                <div class="small"><a href="perekuusy_podrostki_den.png" target="_blank">Открыть инфографику «Перекусы на день»</a></div>
+                <div class="meme-box">Мем: «Когда отложил телефон и вдруг вспомнил, что у тебя есть жизнь» 📵😉</div>
+            </div>
+        </div>
+        <p>Набери хотя бы <span class="highlight">30 очков</span>, чтобы получить уровень «Старт здоровых привычек».</p>
+        <p>Твои очки: <span id="points">0</span></p>
+        <p>Твой уровень: <span id="level">Пока в начале пути</span></p>
+    </section>
+
+    <section class="card">
+        <h2>Твои значки</h2>
+        <p>За прогресс ты получаешь значки. Их можно сохранить как свои личные цели. Видимый бонус: при каждом новом уровне появляется новый значок и фраза поддержки.</p>
+        <div id="badges"></div>
+    </section>
+
+    <section class="card">
+        <h2>Продвинутые миссии (для следующего уровня)</h2>
+        <p class="small">Эти задания можно подключить, когда базовые миссии уже даются легко. Они тоже дают по 5 очков каждое.</p>
+        <div class="flex">
+            <div class="mission mission-1">
+                <h3>Миссия 4: Питание+</h3>
+                <ul class="task-list">
+                    <li><label><input type="checkbox" class="task adv-task" data-points="5">Неделя без сладких газировок</label></li>
+                    <li><label><input type="checkbox" class="task adv-task" data-points="5">3 дня подряд без фаст-фуда</label></li>
+                </ul>
+            </div>
+            <div class="mission mission-2">
+                <h3>Миссия 5: Движение+</h3>
+                <ul class="task-list">
+                    <li><label><input type="checkbox" class="task adv-task" data-points="5">30 минут активности (прогулка, спорт, танцы) 3 раза в неделю</label></li>
+                    <li><label><input type="checkbox" class="task adv-task" data-points="5">Попробовать новый вид активности (йога, плавание, вело и т.п.)</label></li>
+                </ul>
+            </div>
+            <div class="mission mission-3">
+                <h3>Миссия 6: Сон и стресс</h3>
+                <ul class="task-list">
+                    <li><label><input type="checkbox" class="task adv-task" data-points="5">Ложиться спать не позже 23:00 хотя бы 3 дня</label></li>
+                    <li><label><input type="checkbox" class="task adv-task" data-points="5">Попробовать 1 способ расслабления без гаджетов (музыка, дыхание, прогулка)</label></li>
+                </ul>
+            </div>
+        </div>
+        <p class="small">Подсказка: смотри, как растёт твой прогресс и какие новые значки появляются.</p>
+    </section>
+
+    <section class="card">
+        <h2>Гид по балансу: питание, движение, сон</h2>
+        <div class="tab-buttons">
+            <button type="button" class="tab-btn active" data-tab="food">Питание</button>
+            <button type="button" class="tab-btn" data-tab="move">Движение</button>
+            <button type="button" class="tab-btn" data-tab="screen">Экран и сон</button>
+        </div>
+        <div id="food" class="tab-content active">
+            <h3>Тарелка здорового питания</h3>
+            <p>Представь, что твоя тарелка – круг. Примерный баланс для обычного дня:</p>
+            <ul>
+                <li><span class="highlight">1/2 тарелки</span> – овощи и фрукты.</li>
+                <li><span class="highlight">1/4 тарелки</span> – крупы, макароны из цельного зерна, хлеб.</li>
+                <li><span class="highlight">1/4 тарелки</span> – белок: мясо, рыба, яйца, бобовые.</li>
+            </ul>
+            <p class="quote">«Не обязательно идеально. Важно, чтобы в течение дня всё это примерно было».</p>
+            <p><strong>Инфографика:</strong> <a href="tarelka_zdorovogo_pitaniya_podrostki.png" target="_blank">Тарелка здорового питания</a></p>
+        </div>
+        <div id="move" class="tab-content">
+            <h3>Пирамида активности</h3>
+            <ul>
+                <li><span class="pill">Основание (каждый день)</span> – ходьба пешком, лестница, активные дела по дому.</li>
+                <li><span class="pill">Средний уровень (3–5 раз в неделю)</span> – игры, спорт, танцы, тренировки.</li>
+                <li><span class="pill">Верхний уровень (1–2 раза в неделю)</span> – более интенсивные занятия (бег, зал, плавание).</li>
+            </ul>
+            <p><strong>Инфографика:</strong> <a href="piramida_aktivnosti_podrostki.png" target="_blank">Пирамида активности</a></p>
+        </div>
+        <div id="screen" class="tab-content">
+            <h3>Экран и сон</h3>
+            <p>Гаджеты – это нормально. Вопрос в том, чтобы они не забирали сон, движение и еду.</p>
+            <ul>
+                <li>Старайся делать <span class="highlight">5 минут перерыва</span> после каждого часа за экраном.</li>
+                <li>За час до сна по возможности уменьши яркость и убери активные игры.</li>
+                <li>Пробуй <span class="highlight">одну «безэкранную» привычку</span>: книга, музыка, разговор, прогулка.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Мои заметки и цели</h2>
+        <p>Запиши здесь свои идеи или то, что уже получилось. Это только для тебя.</p>
+        <textarea id="notes" style="width:100%;height:120px;"></textarea>
+        <p class="small">Подсказка: можно сохранить файл страницы на компьютер/телефон, чтобы не потерять заметки.</p>
+    </section>
+
+    <section class="card">
+        <h2>Если не получается</h2>
+        <p>Нормально, если не всё получается сразу. Важно, что ты пробуешь.</p>
+        <ul>
+            <li>Если чувствуешь усталость, стресс или провал мотивации – поговори с медсестрой, врачом или психологом.</li>
+            <li>Не сравнивай себя с другими – смотри только на свой прогресс.</li>
+            <li>Любое маленькое изменение – уже шаг вперёд.</li>
+        </ul>
+    </section>
+</main>
+
+<script>
+    const tasks = document.querySelectorAll('.task');
+    const pointsSpan = document.getElementById('points');
+    const levelSpan = document.getElementById('level');
+    const badgesDiv = document.getElementById('badges');
+    const globalProgress = document.getElementById('globalProgress');
+    const globalPercent = document.getElementById('globalPercent');
+    const motivation = document.getElementById('motivation');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let points = 0;
+
+    function updateLevel() {
+        let level = 'Пока в начале пути';
+        const badges = [];
+        let phrase = 'Каждый маленький шаг – уже не ноль. Ты молодец, что начал(а).';
+
+        if (points >= 30 && points < 60) {
+            level = 'Старт здоровых привычек';
+            badges.push('✔ Первый шаг сделан');
+            phrase = 'Отличный старт! Продолжай в том же духе.';
+        } else if (points >= 60 && points < 90) {
+            level = 'Уверенный уровень';
+            badges.push('💪 Движение вперёд');
+            phrase = 'Ты уже делаешь больше, чем большинство. Респект!';
+        } else if (points >= 90) {
+            level = 'Про! Ты держишь баланс';
+            badges.push('⭐ Хранитель баланса');
+            phrase = 'Твой баланс – твоя суперсила. Не обязательно быть идеальным, но ты очень близко.';
+        }
+        levelSpan.textContent = level;
+        motivation.textContent = phrase;
+
+        badgesDiv.innerHTML = '';
+        badges.forEach(b => {
+            const span = document.createElement('span');
+            span.className = 'badge';
+            span.textContent = b;
+            badgesDiv.appendChild(span);
+        });
+
+        const totalTasks = tasks.length;
+        const completed = Array.from(tasks).filter(t => t.checked).length;
+        const percent = Math.round((completed / totalTasks) * 100);
+        globalProgress.style.width = percent + '%';
+        globalPercent.textContent = percent;
+
+        // бонусы за заполнение прогресса
+        if (percent >= 50 && percent < 75) {
+            badges.push('🎯 Половина шкалы: ты на правильном пути');
+        } else if (percent >= 75 && percent < 100) {
+            badges.push('🔥 Почти финиш! Осталось чуть-чуть');
+        } else if (percent === 100) {
+            badges.push('🏆 Полная шкала: максимум за сегодня!');
+        }
+    }
+
+    tasks.forEach(task => {
+        task.addEventListener('change', () => {
+            const value = parseInt(task.getAttribute('data-points')) || 0;
+            if (task.checked) {
+                points += value;
+            } else {
+                points -= value;
+                if (points < 0) points = 0;
+            }
+            pointsSpan.textContent = points;
+            updateLevel();
+        });
+    });
+
+    resetBtn.addEventListener('click', () => {
+        tasks.forEach(task => { task.checked = false; });
+        points = 0;
+        pointsSpan.textContent = points;
+        updateLevel();
+    });
+
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tab = btn.getAttribute('data-tab');
+            tabContents.forEach(c => {
+                if (c.id === tab) c.classList.add('active');
+                else c.classList.remove('active');
+            });
+        });
+    });
+</script>
+</body>
+</html>
